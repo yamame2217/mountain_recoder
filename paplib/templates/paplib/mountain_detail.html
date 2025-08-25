@@ -11,6 +11,34 @@
         <li>標高: {{ mountain.elevation }}m</li>
     </ul>
 
+    <hr>
+
+    {% if user.is_authenticated %}
+        <h3>この山の登山記録を投稿する</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">投稿する</button>
+        </form>
+    {% else %}
+        <p>記録を投稿するには<a href="{% url 'login' %}?next={{ request.path }}">ログイン</a>してください。</p>
+    {% endif %}
+
+    <hr>
+
+    <h3>みんなの登山記録</h3>
+    {% for record in records %}
+        <div>
+            <p>
+                <strong>{{ record.user.username }}</strong> さん ({{ record.climb_date }})
+            </p>
+            <p>{{ record.comment|linebreaksbr }}</p>
+        </div>
+    {% empty %}
+        <p>この山に関する記録はまだありません。</p>
+    {% endfor %}
+
+    <br>
     <a href="{% url 'mountain_list' %}">一覧に戻る</a>
 </body>
 </html>
