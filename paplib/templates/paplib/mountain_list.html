@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>山の一覧</title>
+</head>
+<body>
+    <h1>山の一覧</h1>
+    <ul>
+        {% for mountain in mountains %}
+            <li>{{ mountain.name }} ({{ mountain.prefecture }}, {{ mountain.elevation }}m)</li>
+        {% empty %}
+            <li>登録されている山はありません。</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
