@@ -5,6 +5,14 @@
     <title>山の一覧</title>
 </head>
 <body>
+    <header>
+        {% if user.is_authenticated %}
+            <p>こんにちは, {{ user.username }} さん | <a href="{% url 'logout' %}">ログアウト</a></p>
+        {% else %}
+            <p><a href="{% url 'login' %}">ログイン</a></p>
+        {% endif %}
+    </header>
+    
     <h1>山の一覧</h1>
     <ul>
         {% for mountain in mountains %}
