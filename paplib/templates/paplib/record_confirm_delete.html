@@ -1,0 +1,24 @@
+{% extends 'paplib/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}記録の削除 | 登山記録アプリ{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>記録の削除</h2>
+    </div>
+    <div class="card-body">
+        <p>以下の記録を本当に削除しますか？</p>
+        <div class="alert alert-warning">
+            <p><strong>{{ object.user.username }} さんの {{ object.mountain.name }} の記録</strong> ({{ object.climb_date }})</p>
+            <p>{{ object.comment|linebreaksbr }}</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">はい、削除します</button>
+            <a href="{% url 'mountain_detail' object.mountain.pk %}" class="btn btn-secondary">キャンセル</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

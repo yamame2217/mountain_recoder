@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ログアウト</title>
-</head>
-<body>
-    <h2>ログアウトしました</h2>
-    <p>ご利用いただきありがとうございました。</p>
-    <a href="{% url 'mountain_list' %}">トップページに戻る</a>
-</body>
-</html>
+{% extends 'paplib/base.html' %}
+
+{% block title %}ログアウト | 登山記録アプリ{% endblock %}
+
+{% block content %}
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">ログアウトしました</h4>
+  <p>ご利用いただきありがとうございました。</p>
+  <hr>
+  <p class="mb-0"><a href="{% url 'mountain_list' %}">トップページに戻る</a></p>
+</div>
+{% endblock %}

@@ -1,44 +1,63 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ mountain.name }}の詳細</title>
-</head>
-<body>
-    <h1>{{ mountain.name }}</h1>
-    <ul>
-        <li>都道府県: {{ mountain.prefecture }}</li>
-        <li>標高: {{ mountain.elevation }}m</li>
-    </ul>
+{% extends 'paplib/base.html' %}
+{% load django_bootstrap5 %}
 
-    <hr>
+{% block title %}{{ mountain.name }}の詳細 | 登山記録アプリ{% endblock %}
 
-    {% if user.is_authenticated %}
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h1 class="mb-0">{{ mountain.name }}</h1>
+    </div>
+    <div class="card-body">
+        <p class="card-text">都道府県: {{ mountain.prefecture }}</p>
+        <p class="card-text">標高: {{ mountain.elevation }}m</p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
         <h3>この山の登山記録を投稿する</h3>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">投稿する</button>
-        </form>
-    {% else %}
-        <p>記録を投稿するには<a href="{% url 'login' %}?next={{ request.path }}">ログイン</a>してください。</p>
-    {% endif %}
+    </div>
+    <div class="card-body">
+        {% if user.is_authenticated %}
+            <form method="post">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% bootstrap_button button_type="submit" content="投稿する" %}
+            </form>
+        {% else %}
+            <p>記録を投稿するには<a href="{% url 'login' %}?next={{ request.path }}">ログイン</a>してください。</p>
+        {% endif %}
+    </div>
+</div>
 
-    <hr>
+<div class="card">
+    <div class="card-header">
+        <h3>みんなの登山記録</h3>
+    </div>
+    <div class="list-group list-group-flush">
+        {% for record in records %}
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ record.user.username }} さん</h5>
+                    <div>
+                        <small class="text-muted">{{ record.climb_date }}</small>
+                        {% if record.user == request.user %}
+                            <a href="{% url 'record_edit' record.pk %}" class="btn btn-sm btn-outline-primary ms-2">編集</a>
+                            <a href="{% url 'record_delete' record.pk %}" class="btn btn-sm btn-outline-danger ms-2">削除</a> {% endif %}
+                    </div>
+                </div>
+                <p class="mb-1">{{ record.comment|linebreaksbr }}</p>
+            </div>
+        {% empty %}
+            <div class="list-group-item">
+                <p class="text-muted">この山に関する記録はまだありません。</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
-    <h3>みんなの登山記録</h3>
-    {% for record in records %}
-        <div>
-            <p>
-                <strong>{{ record.user.username }}</strong> さん ({{ record.climb_date }})
-            </p>
-            <p>{{ record.comment|linebreaksbr }}</p>
-        </div>
-    {% empty %}
-        <p>この山に関する記録はまだありません。</p>
-    {% endfor %}
-
-    <br>
-    <a href="{% url 'mountain_list' %}">一覧に戻る</a>
-</body>
-</html>
+<div class="mt-4">
+    <a href="{% url 'mountain_list' %}" class="btn btn-secondary">一覧に戻る</a>
+</div>
+{% endblock %}

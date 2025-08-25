@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Mountain, ClimbRecord
 from .forms import ClimbRecordForm
+from django.views.generic import UpdateView, DeleteView 
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
 
 def mountain_list(request):
     mountains = Mountain.objects.all()
@@ -30,3 +33,28 @@ def mountain_detail(request, pk):
         'form': form,
     }
     return render(request, 'paplib/mountain_detail.html', context)
+
+class ClimbRecordUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = ClimbRecord
+    form_class = ClimbRecordForm
+    template_name = 'paplib/record_form.html'
+
+    def get_success_url(self):
+        record = self.get_object()
+        return reverse_lazy('mountain_detail', kwargs={'pk': record.mountain.pk})
+
+    def test_func(self):
+        record = self.get_object()
+        return self.request.user == record.user
+
+class ClimbRecordDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = ClimbRecord
+    template_name = 'paplib/record_confirm_delete.html'
+
+    def get_success_url(self):
+        record = self.get_object()
+        return reverse_lazy('mountain_detail', kwargs={'pk': record.mountain.pk})
+
+    def test_func(self):
+        record = self.get_object()
+        return self.request.user == record.user
