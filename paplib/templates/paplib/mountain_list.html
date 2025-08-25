@@ -8,7 +8,10 @@
     <h1>山の一覧</h1>
     <ul>
         {% for mountain in mountains %}
-            <li>{{ mountain.name }} ({{ mountain.prefecture }}, {{ mountain.elevation }}m)</li>
+            <li>
+                <a href="{% url 'mountain_detail' mountain.pk %}">{{ mountain.name }}</a>
+                ({{ mountain.prefecture }}, {{ mountain.elevation }}m)
+            </li>
         {% empty %}
             <li>登録されている山はありません。</li>
         {% endfor %}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ mountain.name }}の詳細</title>
+</head>
+<body>
+    <h1>{{ mountain.name }}</h1>
+    <ul>
+        <li>都道府県: {{ mountain.prefecture }}</li>
+        <li>標高: {{ mountain.elevation }}m</li>
+    </ul>
+
+    <a href="{% url 'mountain_list' %}">一覧に戻る</a>
+</body>
+</html>
