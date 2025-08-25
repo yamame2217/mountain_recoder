@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Mountain, ClimbRecord
-from .forms import ClimbRecordForm
-from django.views.generic import UpdateView, DeleteView 
+from .forms import ClimbRecordForm, MountainForm
+from django.views.generic import UpdateView, DeleteView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 
@@ -58,3 +58,9 @@ class ClimbRecordDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
     def test_func(self):
         record = self.get_object()
         return self.request.user == record.user
+
+class MountainCreateView(LoginRequiredMixin, CreateView):
+    model = Mountain
+    form_class = MountainForm
+    template_name = 'paplib/mountain_form.html'
+    success_url = reverse_lazy('mountain_list')

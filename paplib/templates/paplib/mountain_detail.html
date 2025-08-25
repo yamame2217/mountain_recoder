@@ -44,10 +44,16 @@
                         <small class="text-muted">{{ record.climb_date }}</small>
                         {% if record.user == request.user %}
                             <a href="{% url 'record_edit' record.pk %}" class="btn btn-sm btn-outline-primary ms-2">編集</a>
-                            <a href="{% url 'record_delete' record.pk %}" class="btn btn-sm btn-outline-danger ms-2">削除</a> {% endif %}
+                            <a href="{% url 'record_delete' record.pk %}" class="btn btn-sm btn-outline-danger ms-2">削除</a>
+                        {% endif %}
                     </div>
                 </div>
                 <p class="mb-1">{{ record.comment|linebreaksbr }}</p>
+                <small class="text-muted">
+                    登山日: {{ record.climb_date|date:"Y年n月j日" }} |
+                    投稿: {{ record.created_at|date:"Y/n/j H:i" }} |
+                    編集: {{ record.updated_at|date:"Y/n/j H:i" }}
+                </small>
             </div>
         {% empty %}
             <div class="list-group-item">
