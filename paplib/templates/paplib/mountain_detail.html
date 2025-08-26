@@ -1,0 +1,82 @@
+{% extends 'paplib/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}{{ mountain.name }}の詳細 | 登山記録アプリ{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h1 class="mb-0">{{ mountain.name }}</h1>
+    </div>
+    <div class="card-body">
+        <p class="card-text">都道府県: {{ mountain.prefecture }}</p>
+        <p class="card-text">標高: {{ mountain.elevation }}m</p>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>この山の登山記録を投稿する</h3>
+    </div>
+    <div class="card-body">
+        {% if user.is_authenticated %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% bootstrap_button button_type="submit" content="投稿する" %}
+            </form>
+        {% else %}
+            <p>記録を投稿するには<a href="{% url 'login' %}?next={{ request.path }}">ログイン</a>してください。</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>みんなの登山記録</h3>
+    </div>
+    <div class="list-group list-group-flush">
+        {% for record in records %}
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ record.user.username }} さん</h5>
+                    
+                    <div>
+                        <small class="text-muted">{{ record.climb_date }}</small>
+                        {% if record.user == request.user %}
+                            <a href="{% url 'record_edit' record.pk %}" class="btn btn-sm btn-outline-primary ms-2">編集</a>
+                            <a href="{% url 'record_delete' record.pk %}" class="btn btn-sm btn-outline-danger ms-2">削除</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <p class="mb-1">{{ record.comment|linebreaksbr }}</p>
+
+                {% if record.image %}
+                    <div class="mb-2">
+                        <img src="{{ record.image.url }}" class="img-fluid rounded" alt="登山記録の写真" style="max-height: 300px; width: auto;">
+                    </div>
+                {% endif %}
+
+                <small class="text-muted">
+                    登山日: {{ record.climb_date|date:"Y年n月j日" }} |
+                    投稿: {{ record.created_at|date:"Y/n/j H:i" }} |
+                    編集: {{ record.updated_at|date:"Y/n/j H:i" }}
+                </small>
+            </div>
+
+        {% empty %}
+            <div class="list-group-item">
+                <p class="text-muted">この山に関する記録はまだありません。</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'mountain_list' %}" class="btn btn-secondary">一覧に戻る</a>
+
+    {% if user.is_staff %}
+        <a href="{% url 'mountain_edit' mountain.pk %}" class="btn btn-info ms-2">この山を編集する</a>
+    {% endif %}
+</div>
+{% endblock %}
