@@ -4,7 +4,7 @@ from .models import ClimbRecord, Mountain
 class ClimbRecordForm(forms.ModelForm):
     class Meta:
         model = ClimbRecord
-        fields = ['climb_date', 'comment']
+        fields = ['climb_date', 'comment', 'image'] 
         widgets = {
             'climb_date': forms.DateInput(attrs={'type': 'date'}),
         }

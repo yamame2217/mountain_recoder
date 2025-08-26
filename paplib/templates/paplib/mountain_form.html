@@ -1,18 +1,25 @@
 {% extends 'paplib/base.html' %}
 {% load django_bootstrap5 %}
 
-{% block title %}新しい山を登録 | 登山記録アプリ{% endblock %}
+{% block title %}{% if object %}山の編集{% else %}新しい山を登録{% endif %} | 登山記録アプリ{% endblock %}
 
 {% block content %}
 <div class="card">
     <div class="card-header">
-        <h2>新しい山を登録</h2>
+        <h2>{% if object %}山の編集{% else %}新しい山を登録{% endif %}</h2>
     </div>
     <div class="card-body">
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
-            {% bootstrap_button button_type="submit" content="登録する" %}
+            
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">{% if object %}更新する{% else %}登録する{% endif %}</button>
+                
+                {% if object %}
+                    <a href="{% url 'mountain_delete' object.pk %}" class="btn btn-danger">削除する</a>
+                {% endif %}
+            </div>
         </form>
     </div>
 </div>

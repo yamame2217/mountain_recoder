@@ -18,6 +18,7 @@ class ClimbRecord(models.Model):
     climb_date = models.DateField('登った日')
     comment = models.TextField('感想・コメント', blank=True, null=True)
     created_at = models.DateTimeField('作成日', auto_now_add=True)
+    image = models.ImageField('写真', upload_to='photos/', blank=True, null=True)
     updated_at = models.DateTimeField('更新日', auto_now=True)
 
     def __str__(self):

@@ -9,10 +9,21 @@
         <h2>登山記録の編集</h2>
     </div>
     <div class="card-body">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
+
+            {% if form.instance.image %}
+                <div class="mb-3">
+                    <label class="form-label">現在の写真:</label>
+                    <div>
+                        <img src="{{ form.instance.image.url }}" alt="現在の写真" class="img-fluid rounded" style="max-height: 200px;">
+                    </div>
+                </div>
+            {% endif %}
+
             {% bootstrap_form form %}
-            {% bootstrap_button button_type="submit" content="更新する" %}
+            <button type="submit" class="btn btn-primary">更新する</button>
+            <a href="{% url 'mountain_detail' object.mountain.pk %}" class="btn btn-secondary">キャンセル</a>
         </form>
     </div>
 </div>

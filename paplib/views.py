@@ -2,12 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Mountain, ClimbRecord
 from .forms import ClimbRecordForm, MountainForm
-from django.views.generic import UpdateView, DeleteView, CreateView
+from django.views.generic import UpdateView, DeleteView, CreateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 
 def mountain_list(request):
-    mountains = Mountain.objects.all()
+    mountains = Mountain.objects.all().order_by('name')
+    query = request.GET.get('q')
+    if query:
+        mountains = mountains.filter(name__icontains=query)
+
     context = {'mountains': mountains}
     return render(request, 'paplib/mountain_list.html', context)
 
@@ -15,7 +19,7 @@ def mountain_detail(request, pk):
     mountain = Mountain.objects.get(pk=pk)
     
     if request.method == 'POST':
-        form = ClimbRecordForm(request.POST)
+        form = ClimbRecordForm(request.POST, request.FILES) 
         if form.is_valid():
             new_record = form.save(commit=False)
             new_record.user = request.user
@@ -64,3 +68,31 @@ class MountainCreateView(LoginRequiredMixin, CreateView):
     form_class = MountainForm
     template_name = 'paplib/mountain_form.html'
     success_url = reverse_lazy('mountain_list')
+
+class MyPageView(LoginRequiredMixin, ListView):
+    model = ClimbRecord
+    template_name = 'paplib/mypage.html'
+    context_object_name = 'records'
+    paginate_by = 10 
+
+    def get_queryset(self):
+        return ClimbRecord.objects.filter(user=self.request.user).order_by('-climb_date')
+
+class MountainDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Mountain
+    template_name = 'paplib/mountain_confirm_delete.html'
+    success_url = reverse_lazy('mountain_list')
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+class MountainUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Mountain
+    form_class = MountainForm 
+    template_name = 'paplib/mountain_form.html' 
+
+    def get_success_url(self):
+        return reverse_lazy('mountain_detail', kwargs={'pk': self.object.pk})
+
+    def test_func(self):
+        return self.request.user.is_staff
