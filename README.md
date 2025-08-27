@@ -73,3 +73,29 @@
     5. その他
     |
     5.1 /admin/ (Django管理サイト)
+
+## データベース設計
+
+```mermaid
+erDiagram
+    USERS {
+        int id PK
+        string username
+        string password
+        bool is_staff
+    }
+    MOUNTAINS {
+        int id PK
+        string name
+        string prefecture
+        int elevation
+    }
+    RECORDS {
+        int id PK
+        int user_id FK "投稿者"
+        int mountain_id FK "対象の山"
+        text comment
+        string photo
+        date climbed_date
+    }
+```
