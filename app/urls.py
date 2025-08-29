@@ -18,11 +18,21 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework import routers
+from paplib import views
+
+router = routers.DefaultRouter()
+router.register(r'mountains', views.MountainViewSet)
+router.register(r'records', views.ClimbRecordViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')), 
     path('', include('paplib.urls')),
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/register/', views.UserCreateAPIView.as_view(), name='register'),
+    path('register/', views.RegisterPageView.as_view(), name='register-page'),
 ]
 
 if settings.DEBUG:
