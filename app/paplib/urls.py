@@ -1,4 +1,7 @@
 from django.urls import path
+from django.contrib import admin
+from django.urls import path, include
+from rest_framework import routers
 from . import views
 from .views import (
     ClimbRecordUpdateView, 
@@ -9,6 +12,11 @@ from .views import (
     MyPageView
 )
 
+router = routers.DefaultRouter()
+router.register(r'mountains', views.MountainViewSet)
+router.register(r'records', views.ClimbRecordViewSet)
+router.register(r'users', views.UserViewSet)
+
 urlpatterns = [
     path('', views.mountain_list, name='mountain_list'),
     path('mountain/add/', MountainCreateView.as_view(), name='mountain_add'),
@@ -18,4 +26,6 @@ urlpatterns = [
     path('record/<int:pk>/edit/', ClimbRecordUpdateView.as_view(), name='record_edit'),
     path('record/<int:pk>/delete/', ClimbRecordDeleteView.as_view(), name='record_delete'),
     path('mypage/', MyPageView.as_view(), name='mypage'),
+
+    path('api/', include(router.urls)),
 ]
