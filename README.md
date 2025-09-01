@@ -1,5 +1,12 @@
-# 論文管理アプリ paplib
+# 登山記録アプリ
 登山記録を作成できるWebアプリケーションです
+
+# 使用技術一覧
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+![django](https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white)
+
+![bootstrap](https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
 
 # DEMO
 トップページ
