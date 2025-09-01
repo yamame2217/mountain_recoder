@@ -1,0 +1,121 @@
+{% extends 'paplib/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}ユーザー登録{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">ユーザー登録</h2>
+                </div>
+                <div class="card-body">
+                    <!-- 登録フォーム -->
+                    <form id="register-form">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">ユーザー名</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                            <div id="username-error" class="text-danger mt-1"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">メールアドレス</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                            <div id="email-error" class="text-danger mt-1"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">パスワード</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div id="password-error" class="text-danger mt-1"></div>
+                        </div>
+                        
+                        <!-- 全体的なエラーメッセージ表示用 -->
+                        <div id="non-field-error" class="alert alert-danger d-none" role="alert"></div>
+
+                        <button type="submit" class="btn btn-primary w-100">登録する</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('register-form');
+    
+    // エラーメッセージ表示用の要素を取得
+    const usernameError = document.getElementById('username-error');
+    const emailError = document.getElementById('email-error');
+    const passwordError = document.getElementById('password-error');
+    const nonFieldError = document.getElementById('non-field-error');
+
+    form.addEventListener('submit', async (event) => {
+        // デフォルトのフォーム送信をキャンセル
+        event.preventDefault();
+
+        // エラーメッセージをリセット
+        usernameError.textContent = '';
+        emailError.textContent = '';
+        passwordError.textContent = '';
+        nonFieldError.classList.add('d-none');
+
+        // フォームからデータを取得
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        // CSRFトークンを取得
+        const csrfToken = data.csrfmiddlewaretoken;
+
+        try {
+            // /api/register/ エンドポイントにデータをPOSTする
+            const response = await fetch('/api/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // DjangoのCSRF保護を通過するために必要
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    username: data.username,
+                    email: data.email,
+                    password: data.password
+                })
+            });
+
+            if (response.ok) {
+                // 登録成功
+                alert('ユーザー登録が完了しました。ログインページに移動します。');
+                // ログインページにリダイレクト
+                window.location.href = "{% url 'rest_framework:login' %}";
+            } else {
+                // 登録失敗 (バリデーションエラーなど)
+                const errorData = await response.json();
+                console.error('Registration failed:', errorData);
+
+                // 各フィールドのエラーを表示
+                if (errorData.username) {
+                    usernameError.textContent = errorData.username.join(' ');
+                }
+                if (errorData.email) {
+                    emailError.textContent = errorData.email.join(' ');
+                }
+                if (errorData.password) {
+                    passwordError.textContent = errorData.password.join(' ');
+                }
+                if (errorData.non_field_errors) {
+                    nonFieldError.textContent = errorData.non_field_errors.join(' ');
+                    nonFieldError.classList.remove('d-none');
+                }
+            }
+        } catch (error) {
+            console.error('An unexpected error occurred:', error);
+            nonFieldError.textContent = '予期せぬエラーが発生しました。';
+            nonFieldError.classList.remove('d-none');
+        }
+    });
+});
+</script>
+{% endblock %}

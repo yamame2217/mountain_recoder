@@ -1,0 +1,2 @@
+[console_scripts]
+climb_rec = app.cli:cli
