@@ -12,8 +12,77 @@ Requires-Dist: djangorestframework>=3.16.1
 Requires-Dist: pillow>=11.3.0
 Requires-Dist: requests>=2.32.5
 
-# mountain_recoder
-アプリケーション開発演習 自由課題①
+# 登山記録アプリ
+登山記録を作成できるWebアプリケーションです
+
+# 使用技術一覧
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+![django](https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white)
+
+![bootstrap](https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
+
+# DEMO
+トップページ
+![トップページの画像](/image/トップページ.png)
+登山記録の例
+![トップページの画像](/image/登山記録.png)
+
+# Features
+* 山ごとに登山記録を投稿できます
+* 登山記録に画像を付けることもできます
+* 他のユーザーの記録も見ることができます。
+
+# Requirement
+* python 3.12
+
+# Installation
+APIクライアントを用意しています
+* climb_rec 0.1.0
+
+climb_recはpipでインストールできます。
+
+```bash
+pip install ./dist/mountain_recoder-0.1.0-py3-none-any.whl
+```
+
+# Usage
+
+Usage: climb_rec [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+```
+  Mt_create    新しい山を登録します。
+  Mt_list      山の一覧を表示します。
+  rec_create   新しい登山記録を登録します。
+  rec_list     登山記録の一覧を表示します。
+  user_create  新しいユーザーを登録します。
+  user_list    ユーザーの一覧を表示します。(要管理者権限)
+  ```
+
+example)
+```bash
+climb_rec rec_list
+```
+
+# Author
+
+* 作成者
+    * Wakabayashi
+
+* 所属
+    * Kitasato University
+
+
+
+# License
+
+"paplib" is Confidential.
+
+
 
 ## サイトマップ
 

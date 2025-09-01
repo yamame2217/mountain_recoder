@@ -152,7 +152,6 @@ def create_user(username, email, password):
 # --- CLI Commands ---
 @click.group()
 def cli():
-    """登山記録アプリのAPIクライアント"""
     pass
 
 # Mountain Commands
